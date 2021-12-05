@@ -25,8 +25,8 @@ OBJS = $(SOURCES:.c=.o)
 all: $(NAME) 
 
 $(NAME): $(OBJS) $(LIBFT) Makefile
-	$(CC) $(CFLAGS) -o $(NAME) $(LIBFT) $(OBJS) 
-
+	$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBFT)
+ 
 $(LIBFT):
 	make -sC ./libft
 

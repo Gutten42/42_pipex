@@ -53,12 +53,10 @@ static size_t	finalpnt(char const *s1, char const *set)
 char	*ft_strtrim(char const *s1, char const *set)
 {
 	char	*result;
-	size_t	ind;
 	size_t	ind2;
 	size_t	scut;
 	size_t	fcut;
 
-	ind = 0;
 	ind2 = 0;
 	if (!s1 || !set)
 		return (NULL);

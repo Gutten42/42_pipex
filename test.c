@@ -92,25 +92,28 @@ int	main(int argc, char **argv, char **envp)
 {
 	char	**paths;
 	int		fd[2][2];
-	// char	result;
-	// ssize_t	more;
 	int		ind;
 	t_execord	*pepe;
 	int		rfd;
 	
 	paths = get_paths(envp);
 	rfd = open(argv[1], O_RDONLY);
-	pepe = get_execord(argv[2], paths);
-	pipe(fd[0]);
-	exec(pepe, rfd, fd[0][1], envp);
-	ind = 3;
-	while (ind < (argc - 1))
+	if (rfd < 0)
+		printf("%s: %s\n", strerror(errno), argv[1]);
+	else
 	{
-		pepe = get_execord(argv[ind], paths);
-		pipe(fd[ind % 2]);
-		exec(pepe, fd[(ind + 1) % 2][0], fd[ind % 2][1], envp);
-		ind++;
+		pepe = get_execord(argv[2], paths);
+		pipe(fd[0]);
+		exec(pepe, rfd, fd[0][1], envp);
+		ind = 3;
+		while (ind < (argc - 1))
+		{
+			pepe = get_execord(argv[ind], paths);
+			pipe(fd[ind % 2]);
+			exec(pepe, fd[(ind + 1) % 2][0], fd[ind % 2][1], envp);
+			ind++;
+		}
+		output(fd[(ind + 1) % 2][0], argv[ind]);
 	}
-	output(fd[(ind + 1) % 2][0], argv[ind]);
 	printf("Success\n");	
 }
