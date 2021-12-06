@@ -18,6 +18,9 @@ LIBFT = libft/libft.a
 SOURCES = test.c \
 			get_paths.c \
 			search_comm.c \
+			exec.c \
+			get_execord.c \
+			output.c \
 			
 
 OBJS = $(SOURCES:.c=.o)

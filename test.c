@@ -12,108 +12,35 @@
 
 #include "pipex.h"
 
-typedef struct s_execord
-{
-	char	*comm;
-	char	**argsum;
-}				t_execord;
-
-int	exec(t_execord *execord, int rfd, int wfd, char **envp)
-{
-	pid_t	pidC;
-	
-	pidC = fork();
-	if (pidC == 0)
-	{
-		dup2(rfd, STDIN_FILENO);
-		close(rfd);
-		dup2(wfd, STDOUT_FILENO);
-		close(wfd);
-		execve(execord->comm, execord->argsum, envp);
-	}
-	else
-	{
-		close(rfd);
-		close(wfd);
-		free(execord);
-		return (1);
-	}
-	return	(0);
-}
-
-t_execord	*get_execord(char *command, char **paths)
-{
-	t_execord	*result;
-	char		**complus;
-	char		*last_bar;
-	
-	complus = ft_split(command, ' ');
-	result = (t_execord *)malloc(sizeof(t_execord));
-	last_bar = ft_strrchr(complus[0], '/');
-	if (last_bar)
-	{
-		result->comm = command;
-		result->argsum = complus;
-		result->argsum[0] = ft_strdup(last_bar + sizeof(char));
-		free(complus[0]);
-	}
-	else
-	{
-		result->comm = search_comm(complus[0], paths);
-		result->argsum = complus;
-	}
-	return (result);
-}
-
-void	output(int rfd, char *xfile)
-{
-	int		wfd;
-	char	result;
-	ssize_t more;
-	
-	wfd = open(xfile, O_CREAT | O_WRONLY | O_TRUNC, 0666);
-	if (wfd < 0)
-		printf("%s: %s\n", strerror(errno), xfile);
-	else
-	{
-		more = read(rfd, &result, 1);
-		while (more > 0)
-		{
-			//write(1, &result, 1);
-			write(wfd, &result, 1);
-			more = read(rfd, &result, 1);
-		}
-		close(wfd);	
-	}
-	close(rfd);
-}
-
 int	main(int argc, char **argv, char **envp)
 {
-	char	**paths;
-	int		fd[2][2];
-	int		ind;
-	t_execord	*pepe;
-	int		rfd;
+	t_envir		env;
+	int			fd[2][2];
+	int			ind;
+	int			rfd;
 	
-	paths = get_paths(envp);
+	env.paths = get_paths(envp);
+	env.argv = argv;
+	env.envp = envp;
+	if (argc < 3)
+		exit(0);
 	rfd = open(argv[1], O_RDONLY);
 	if (rfd < 0)
 		printf("%s: %s\n", strerror(errno), argv[1]);
-	else
+	else if (argc > 3)
 	{
-		pepe = get_execord(argv[2], paths);
+		ind = 2;
 		pipe(fd[0]);
-		exec(pepe, rfd, fd[0][1], envp);
-		ind = 3;
-		while (ind < (argc - 1))
+		exec(&env, rfd, fd[0][1], ind);
+		while (ind < (argc - 2))
 		{
-			pepe = get_execord(argv[ind], paths);
-			pipe(fd[ind % 2]);
-			exec(pepe, fd[(ind + 1) % 2][0], fd[ind % 2][1], envp);
 			ind++;
+			pipe(fd[ind % 2]);
+			exec(&env, fd[(ind + 1) % 2][0], fd[ind % 2][1], ind);
 		}
-		output(fd[(ind + 1) % 2][0], argv[ind]);
+		output(fd[ind % 2][0], argv[ind + 1]);
 	}
+	else
+		output(rfd, argv[2]);
 	printf("Success\n");	
 }
