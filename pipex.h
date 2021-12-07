@@ -6,7 +6,7 @@
 /*   By: vguttenb <vguttenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/01 17:02:26 by vguttenb          #+#    #+#             */
-/*   Updated: 2021/12/04 17:35:36 by vguttenb         ###   ########.fr       */
+/*   Updated: 2021/12/07 18:00:16 by vguttenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,5 +39,6 @@ char		*search_comm(char *comm, char **paths);
 t_execord	*get_execord(char *command, char **paths);
 int			exec(t_envir *env, int rfd, int wfd, int ind);
 void		output(int rfd, char *xfile);
+int			get_closed_fd(void);
 
 # endif

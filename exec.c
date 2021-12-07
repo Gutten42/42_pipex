@@ -7,6 +7,12 @@ int	exec(t_envir *env, int rfd, int wfd, int ind)
 	pid_t		pidC;
 	
 	exec = get_execord(env->argv[ind], env->paths);
+	if (rfd < 0)
+	{
+		rfd = -1;
+		// rfd = open("temp", O_RDONLY | O_CREAT);
+		// unlink("temp");
+	}
 	pidC = fork();
 	if (pidC == 0)
 	{
