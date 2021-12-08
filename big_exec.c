@@ -23,7 +23,7 @@ int	big_exec(t_envir *env, int rfd)
 	{
 		rfd = get_closed_fd();
 		ind++;
-		if (env->argv[ind + 2])
+		if (!env->argv[ind + 2])
 			return (-1);
 	}
 	pipe(fd[0]);
