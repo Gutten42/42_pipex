@@ -6,7 +6,7 @@
 /*   By: vguttenb <vguttenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/01 17:02:26 by vguttenb          #+#    #+#             */
-/*   Updated: 2021/12/07 18:00:16 by vguttenb         ###   ########.fr       */
+/*   Updated: 2021/12/08 20:26:09 by vguttenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ typedef struct s_execord
 {
 	char	*comm;
 	char	**argsum;
+	char	free;
 }				t_execord;
 
 typedef struct s_envir
@@ -36,9 +37,10 @@ typedef struct s_envir
 
 char		**get_paths(char **envp);
 char		*search_comm(char *comm, char **paths);
-t_execord	*get_execord(char *command, char **paths);
-int			exec(t_envir *env, int rfd, int wfd, int ind);
-void		output(int rfd, char *xfile);
+void		get_execord(char *command, char **paths, t_execord *result);
+void		exec(t_execord *execorder, int rfd, int wfd, char **envp);
+void		take_output(int rfd, char *xfile);
 int			get_closed_fd(void);
+int			big_exec(t_envir *env, int rfd, int ind, char **envp);
 
 # endif

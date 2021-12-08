@@ -6,7 +6,7 @@
 #    By: vguttenb <vguttenb@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/12/01 16:54:57 by vguttenb          #+#    #+#              #
-#    Updated: 2021/12/07 18:00:43 by vguttenb         ###   ########.fr        #
+#    Updated: 2021/12/08 16:09:25 by vguttenb         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,8 +20,9 @@ SOURCES = test.c \
 			search_comm.c \
 			exec.c \
 			get_execord.c \
-			output.c \
+			take_output.c \
 			get_closed_fd.c \
+			big_exec.c \
 			
 
 OBJS = $(SOURCES:.c=.o)

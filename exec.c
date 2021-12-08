@@ -1,36 +1,26 @@
 
 #include "pipex.h"
 
-int	exec(t_envir *env, int rfd, int wfd, int ind)
+void	exec(t_execord *execorder, int rfd, int wfd, char **envp)
 {
-	t_execord	*exec;
-	pid_t		pidC;
 	
-	exec = get_execord(env->argv[ind], env->paths);
-	if (rfd < 0)
+	pid_t		pidC;
+
+	if(execorder->comm)
 	{
-		rfd = -1;
-		// rfd = open("temp", O_RDONLY | O_CREAT);
-		// unlink("temp");
-	}
-	pidC = fork();
-	if (pidC == 0)
-	{
-		dup2(rfd, STDIN_FILENO);
-		close(rfd);
-		dup2(wfd, STDOUT_FILENO);
-		close(wfd);
-		execve(exec->comm, exec->argsum, env->envp);
-		perror(exec->argsum[0]);
-		ind = 0;
+		pidC = fork();
+		if (pidC == 0)
+		{
+			dup2(rfd, STDIN_FILENO);
+			close(rfd);
+			dup2(wfd, STDOUT_FILENO);
+			close(wfd);
+			execve(execorder->comm, execorder->argsum, envp);
+			perror(execorder->argsum[0]);
+		}
 	}
 	else
-	{
-		close(rfd);
-		close(wfd);
-		free(exec);
-	}
-	if (!ind)
-		return(0);
-	return(1);
+		printf("command not found: %s\n", execorder->argsum[0]);
+	close(rfd);
+	close(wfd);
 }
