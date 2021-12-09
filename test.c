@@ -12,7 +12,7 @@
 
 #include "pipex.h"
 
-int	nullfd(void)
+static int	nullfd(void)
 {
 	int	fd[2];
 
@@ -41,8 +41,9 @@ int	main(int argc, char **argv, char **envp)
 		rfd = nullfd();
 	}
 	if (argv[ind + 1])
-		rfd = big_exec(&env, rfd, ind, envp);
+		rfd = big_exec(&env, rfd, ind);
 	take_output(rfd, argv[argc - 1]);
+	free(env.paths);
 	system("leaks pipex");
 	printf("Success\n");
 }

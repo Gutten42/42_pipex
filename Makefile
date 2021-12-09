@@ -19,10 +19,10 @@ SOURCES = test.c \
 			get_paths.c \
 			search_comm.c \
 			exec.c \
-			get_execord.c \
 			take_output.c \
 			get_closed_fd.c \
 			big_exec.c \
+			exec_comm.c \
 			
 
 OBJS = $(SOURCES:.c=.o)

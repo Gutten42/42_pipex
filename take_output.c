@@ -26,7 +26,6 @@ void	take_output(int rfd, char *xfile)
 		more = read(rfd, &result, 1);
 		while (more > 0)
 		{
-			//write(1, &result, 1);
 			write(wfd, &result, 1);
 			more = read(rfd, &result, 1);
 		}
