@@ -1,6 +1,16 @@
-#include "pipex.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_manage.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vguttenb <vguttenb@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/12/10 18:49:21 by vguttenb          #+#    #+#             */
+/*   Updated: 2021/12/10 18:49:21 by vguttenb         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-//printf("command not found: %s\n", exec_order->argsum[0]);
+#include "pipex.h"
 
 static void	execfree(t_execord *exec_order)
 {
@@ -48,69 +58,68 @@ void	exec_comm(t_envir *env, int ind, int rfd, int *wfd)
 	t_execord	exec_order;
 
 	if (!env->argv[ind] || !env->argv[ind][0])
-		write(1, "No esiste eso\n", 14);
+		ft_putstr_fd("pipex: empty argument\n", 1);
 	else
 	{
 		get_execord(env->argv[ind], env->paths, &exec_order);
 		if (!exec_order.comm)
 		{
 			if (exec_order.free)
-				write(1, "No esiste ese comando\n", 22);
+				ft_putstr_fd("pipex: command not found\n", 1);
 			else
-				write(1, "No esiste ese archivo\n", 22);
+				ft_putstr_fd("pipex: file not found\n", 1);
 		}
 		else
 			exec(&exec_order, rfd, wfd, env->envp);
 		execfree(&exec_order);
 	}
 	close(rfd);
-	close(wfd[1]);
-}
-
-int	big_exec(t_envir *env, int rfd, int ind)
-{
-	int	fd[2][2];
-
-	pipe(fd[ind % 2]);
-	/*if (!pipe(fd[ind % 2]))
-	{
-		close(fd[ind % 2][0]);
-		close(fd[ind % 2][1]);
-		return(rfd);
-	}*/
-	exec_comm(env, ind, rfd, fd[ind % 2]);
-	while (env->argv[ind + 2])
-	{
-		ind++;
-		pipe(fd[ind % 2]);
-		/*if (!pipe(fd[ind % 2]))
-		{
-			close(fd[ind % 2][0]);
-			close(fd[ind % 2][1]);
-			ind--;
-			break ;
-		}*/
-		exec_comm(env, ind,  fd[(ind + 1) % 2][0], fd[ind % 2]);
-	}
-	return(fd[ind % 2][0]);
+	close(wfd[WR_END]);
 }
 
 /*int	big_exec(t_envir *env, int rfd, int ind)
 {
 	int	fd[2][2];
 
-	fd[(ind + 1) % 2][0] = rfd;
-	while (env->argv[ind + 1])
+	pipe(fd[ind % 2]);
+	if (!pipe(fd[ind % 2]))
 	{
-		rfd = fd[(ind + 1) % 2][0];
+		close(fd[ind % 2][0]);
+		close(fd[ind % 2][1]);
+		return(rfd);
+	}
+	exec_comm(env, ind, rfd, fd[ind % 2]);
+	while (env->argv[ind + 2])
+	{
+		ind++;
+		pipe(fd[ind % 2]);
 		if (!pipe(fd[ind % 2]))
 		{
 			close(fd[ind % 2][0]);
 			close(fd[ind % 2][1]);
+			ind--;
+			break ;
+		}
+		exec_comm(env, ind,  fd[(ind + 1) % 2][0], fd[ind % 2]);
+	}
+	return(fd[ind % 2][0]);
+}*/
+
+int	exec_manage(t_envir *env, int rfd, int ind)
+{
+	int	fd[2][2];
+
+	while (ind < env->argc)
+	{
+		if (pipe(fd[ind % 2]) < 0)
+		{
+			close(fd[ind % 2][RD_END]);
+			close(fd[ind % 2][WR_END]);
 			return (rfd);
 		}
 		exec_comm(env, ind, rfd, fd[ind % 2]);
+		rfd = fd[ind % 2][RD_END];
 		ind++;
 	}
 	return(rfd);
-}*/
+}

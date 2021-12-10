@@ -6,24 +6,13 @@
 /*   By: vguttenb <vguttenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/01 19:45:56 by vguttenb          #+#    #+#             */
-/*   Updated: 2021/12/08 20:32:41 by vguttenb         ###   ########.fr       */
+/*   Updated: 2021/12/10 18:46:49 by vguttenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int	gnl_strlen(char *str)
-{
-	int		size;
-
-	size = 0;
-	if (str)
-		while (str[size])
-			size++;
-	return (size);
-}
-
-char	*gnl_strjoin(char *keeper, char *buffer)
+static char	*strjoin_free(char *keeper, char *buffer)
 {
 	int		size;
 	int		ind1;
@@ -32,7 +21,7 @@ char	*gnl_strjoin(char *keeper, char *buffer)
 
 	ind1 = -1;
 	ind2 = 0;
-	size = gnl_strlen(keeper) + gnl_strlen(buffer);
+	size = ft_strlen(keeper) + ft_strlen(buffer);
 	result = (char *)malloc(sizeof(char) * (size + 1));
 	if (keeper)
 		while (keeper[++ind1])
@@ -53,10 +42,10 @@ char	*search_comm(char *comm, char **paths)
 	char	*ret;
 
 	i = 0;
-	while (paths[i])
+	while (paths[i] && paths[i][0])
 	{
 		ret = ft_strjoin(paths[i], "/");
-		ret = gnl_strjoin(ret, comm);
+		ret = strjoin_free(ret, comm);
 		if (access(ret, F_OK) > -1)
 			return (ret);
 		free(ret);

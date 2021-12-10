@@ -6,7 +6,7 @@
 #    By: vguttenb <vguttenb@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/12/01 16:54:57 by vguttenb          #+#    #+#              #
-#    Updated: 2021/12/08 16:09:25 by vguttenb         ###   ########.fr        #
+#    Updated: 2021/12/10 18:56:14 by vguttenb         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,13 +15,11 @@ CC = gcc
 CFLAGS = -Wall -Werror -Wextra -g
 LIBFT = libft/libft.a
 
-SOURCES = test.c \
-			get_paths.c \
+SOURCES = pipex.c \
 			search_comm.c \
 			exec.c \
-			take_output.c \
-			get_closed_fd.c \
-			exec_comm.c \
+			exec_manage.c \
+			piping.c \
 			
 
 OBJS = $(SOURCES:.c=.o)
