@@ -16,6 +16,7 @@ char	**get_paths(char **envp)
 {
 	int		i;
 	char	*paths;
+	char	**result;
 
 	i = 0;
 	while (envp[i])
@@ -25,5 +26,9 @@ char	**get_paths(char **envp)
 			return (ft_split(paths + sizeof(char) * 5, ':'));
 		i++;
 	}
-	return (NULL);
+	result = (char**)malloc(sizeof(char*) * 2);
+	result[0] = (char)malloc(sizeof(char));
+	result[0][1] = '\0';
+	result[1] = NULL;
+	return (result);
 }

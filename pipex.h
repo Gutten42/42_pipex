@@ -37,10 +37,10 @@ typedef struct s_envir
 
 char		**get_paths(char **envp);
 char		*search_comm(char *comm, char **paths);
-void		exec(t_execord *execorder, int rfd, int wfd, char **envp);
+void		exec(t_execord *execorder, int rfd, int *wfd, char **envp);
 void		take_output(int rfd, char *xfile);
 int			get_closed_fd(void);
 int			big_exec(t_envir *env, int rfd, int ind);
-void		exec_comm(t_envir *env, int ind, int rfd, int wfd);
+void		exec_comm(t_envir *env, int ind, int rfd, int *wfd);
 
 # endif

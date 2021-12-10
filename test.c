@@ -40,9 +40,19 @@ int	main(int argc, char **argv, char **envp)
 		ind++;
 		rfd = nullfd();
 	}
+	/*if (argc - ind > 1 || ind == 2)
+	{
+		wfd = open(argv[argc - 1], O_CREAT | O_WRONLY | O_TRUNC, 0666);
+		if (wfd < 0)
+		{
+			printf("%s: %s\n", strerror(errno), argv[1]);
+			env.argv[argc - 1] = NULL; ESTO NO VA A FUNCIONAR PERO NECESITO ALGO QUE SE VENTILE EL ÚLTIMO COMANDO SI NO SE PUEDE CREAR EL ARCHIVO DE OUTPUT
+		}
+	}*/
 	if (argv[ind + 1])
 		rfd = big_exec(&env, rfd, ind);
 	take_output(rfd, argv[argc - 1]);
+	//take_output(rfd, wfd);
 	free(env.paths);
 	system("leaks pipex");
 	printf("Success\n");

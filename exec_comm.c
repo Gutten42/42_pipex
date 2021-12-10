@@ -43,7 +43,7 @@ static void	get_execord(char *command, char **paths, t_execord *result)
 	}
 }
 
-void	exec_comm(t_envir *env, int ind, int rfd, int wfd)
+void	exec_comm(t_envir *env, int ind, int rfd, int *wfd)
 {
 	t_execord	exec_order;
 
@@ -64,5 +64,53 @@ void	exec_comm(t_envir *env, int ind, int rfd, int wfd)
 		execfree(&exec_order);
 	}
 	close(rfd);
-	close(wfd);
+	close(wfd[1]);
 }
+
+int	big_exec(t_envir *env, int rfd, int ind)
+{
+	int	fd[2][2];
+
+	pipe(fd[ind % 2]);
+	/*if (!pipe(fd[ind % 2]))
+	{
+		close(fd[ind % 2][0]);
+		close(fd[ind % 2][1]);
+		return(rfd);
+	}*/
+	exec_comm(env, ind, rfd, fd[ind % 2]);
+	while (env->argv[ind + 2])
+	{
+		ind++;
+		pipe(fd[ind % 2]);
+		/*if (!pipe(fd[ind % 2]))
+		{
+			close(fd[ind % 2][0]);
+			close(fd[ind % 2][1]);
+			ind--;
+			break ;
+		}*/
+		exec_comm(env, ind,  fd[(ind + 1) % 2][0], fd[ind % 2]);
+	}
+	return(fd[ind % 2][0]);
+}
+
+/*int	big_exec(t_envir *env, int rfd, int ind)
+{
+	int	fd[2][2];
+
+	fd[(ind + 1) % 2][0] = rfd;
+	while (env->argv[ind + 1])
+	{
+		rfd = fd[(ind + 1) % 2][0];
+		if (!pipe(fd[ind % 2]))
+		{
+			close(fd[ind % 2][0]);
+			close(fd[ind % 2][1]);
+			return (rfd);
+		}
+		exec_comm(env, ind, rfd, fd[ind % 2]);
+		ind++;
+	}
+	return(rfd);
+}*/

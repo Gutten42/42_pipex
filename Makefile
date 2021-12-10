@@ -21,7 +21,6 @@ SOURCES = test.c \
 			exec.c \
 			take_output.c \
 			get_closed_fd.c \
-			big_exec.c \
 			exec_comm.c \
 			
 
