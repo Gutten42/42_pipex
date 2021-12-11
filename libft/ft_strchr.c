@@ -17,6 +17,8 @@ char	*ft_strchr(const char *str, int srch)
 	size_t	ind;
 
 	ind = 0;
+	if (!str)
+		return (NULL);
 	while (str[ind] != 0)
 	{
 		if (str[ind] == (char)srch)

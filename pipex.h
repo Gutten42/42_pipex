@@ -19,6 +19,8 @@
 # include <fcntl.h>
 # include <string.h>
 # include <errno.h>
+# include <sys/types.h>
+# include <sys/wait.h>
 # include "libft/libft.h"
 
 # define RD_END	0
@@ -37,9 +39,10 @@ typedef struct s_envir
 	char	**argv;
 	int		argc;
 	char	**envp;
+	int		sp_flag;
 }				t_envir;
 
-void		piping(t_envir *env, int ind);
+void		piping(t_envir *env, int ind, int rfd);
 char		*search_comm(char *comm, char **paths);
 int			exec_manage(t_envir *env, int rfd, int ind);
 void		exec(t_execord *execorder, int rfd, int *wfd, char **envp);
