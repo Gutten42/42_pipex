@@ -1,7 +1,7 @@
 
 #include "pipex.h"
 
-void	exec(t_execord *execorder, int rfd, int *wfd, char **envp)
+void	exec(t_execord *execorder, int rfd, int *pip, char **envp)
 {
 	pid_t		pidC;
 
@@ -10,13 +10,16 @@ void	exec(t_execord *execorder, int rfd, int *wfd, char **envp)
 		perror("fork");
 	else if (pidC == 0)
 	{
-		close(wfd[RD_END]);
+		close(pip[RD_END]);
 		dup2(rfd, STDIN_FILENO);
 		close(rfd);
-		dup2(wfd[WR_END], STDOUT_FILENO);
-		close(wfd[WR_END]);
-		execve(execorder->comm, execorder->argsum, envp);
-		perror(execorder->argsum[0]);
+		dup2(pip[WR_END], STDOUT_FILENO);
+		close(pip[WR_END]);
+		if (execve(execorder->comm, execorder->argsum, envp) < 0)
+		{
+			perror(execorder->argsum[0]);
+			exit (0);
+		}
 	}
 	else
 		waitpid(pidC, NULL, 0);

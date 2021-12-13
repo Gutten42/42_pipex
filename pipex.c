@@ -6,7 +6,7 @@
 /*   By: vguttenb <vguttenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/10 18:50:55 by vguttenb          #+#    #+#             */
-/*   Updated: 2021/12/10 19:01:42 by vguttenb         ###   ########.fr       */
+/*   Updated: 2021/12/13 19:43:09 by vguttenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,54 +43,32 @@ static char	**get_paths(char **envp)
 	return (result);
 }
 
-int	get_tty(char *limiter)
-{
-	int		pip[2];
-	char	buffer[2];
-	char	*keeper;
-
-	pipe(pip);
-	buffer[1] = '\0';
-	while (1)
-	{
-		keeper = "";
-		write(1, "> ", 2);
-		while (!ft_strchr(keeper, '\n'))
-		{
-			read(0, &buffer[0], 1);
-			keeper = ft_strjoin(keeper, buffer);
-		}
-		if (ft_strnstr(keeper, limiter, ft_strlen(limiter))) //RECUERDA QUE HAS CAMBIADO STRCHR
-			break ;
-		write(pip[WR_END], keeper, ft_strlen(keeper));
-	}
-	close(pip[WR_END]);
-	return (pip[RD_END]);
-}
-
 int	main(int argc, char **argv, char **envp)
 {
 	t_envir		env;
 	int			rfd;
+	int			ind;
 	
-	//printf("%d\n", O_APPEND);
-	if (argc < 3)
+	env.tty_mode = 0;
+	if (argc > 1 && (ft_strnstr(argv[1], "here_doc", 8) && argv[1][8] == '\0'))
+		env.tty_mode = 1;
+	if (argc < 3 || (env.tty_mode && argc < 4))
 	{
-		ft_putstr_fd("Error: not enough arguments, pipex needs at least an input file and an output file\n", 1);
+		if (env.tty_mode)
+			ft_putstr_fd("Error: not enough arguments, pipex on here_doc mode needs at least here_doc tag, a limiter and an output file\n", 1);
+		else
+			ft_putstr_fd("Error: not enough arguments, pipex needs at least an input file and an output file\n", 1);
 		exit(0);
 	}
+	ind = 2;
 	env.paths = get_paths(envp);
 	env.argv = argv;
 	env.argc = argc - 1;
 	env.envp = envp;
-	env.sp_flag = 1;
-	if (ft_strnstr(argv[1], "here_doc", 8) && argv[1][8] == '\0')
-	{
-		env.sp_flag = 2;
-		rfd = get_tty(argv[2]);
-	}
-	piping(&env, 3, rfd);
+	env.sp_flag = O_TRUNC;
+	rfd = get_rfd(&env, &ind);
+	piping(&env, ind, rfd);
 	free_paths(env.paths);
 	//system("leaks pipex");
-	printf("Success\n");
+	//printf("Success\n");
 }

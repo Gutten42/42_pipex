@@ -6,7 +6,7 @@
 /*   By: vguttenb <vguttenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/01 17:02:26 by vguttenb          #+#    #+#             */
-/*   Updated: 2021/12/10 18:59:10 by vguttenb         ###   ########.fr       */
+/*   Updated: 2021/12/13 19:18:52 by vguttenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,16 @@ typedef struct s_envir
 	int		argc;
 	char	**envp;
 	int		sp_flag;
+	char	tty_mode;	
 }				t_envir;
 
 void		piping(t_envir *env, int ind, int rfd);
 char		*search_comm(char *comm, char **paths);
 int			exec_manage(t_envir *env, int rfd, int ind);
 void		exec(t_execord *execorder, int rfd, int *wfd, char **envp);
+int			get_rfd(t_envir *env, int *ind);
+void		err_msg(char *err, char *filename);
+char		*sec_strchr(const char *str, int srch);
+char		*gnl_strjoin(char *keeper, char *buffer);
 
 # endif

@@ -27,7 +27,7 @@ static void	execfree(t_execord *exec_order)
 	free(exec_order->argsum);
 }
 
-static void	get_execord(char *command, char **paths, t_execord *result)
+static void	get_execord(char *command, char **paths, t_execord *exec_order)
 {
 	char		**complus;
 	char		*last_bar;
@@ -36,24 +36,24 @@ static void	get_execord(char *command, char **paths, t_execord *result)
 	last_bar = ft_strrchr(complus[0], '/');
 	if (last_bar)
 	{
-		result->comm = command;
-		if (access(result->comm, F_OK) < 0)
-		 	result->comm = NULL;
-		result->argsum = complus;
+		exec_order->comm = command;
+		if (access(exec_order->comm, F_OK) < 0)
+		 	exec_order->comm = NULL;
+		exec_order->argsum = complus;
 		last_bar = ft_strdup(last_bar + sizeof(char));
 		free(complus[0]);
-		result->argsum[0] = last_bar;
-		result->free = 0;
+		exec_order->argsum[0] = last_bar;
+		exec_order->free = 0;
 	}
 	else
 	{
-		result->comm = search_comm(complus[0], paths);
-		result->argsum = complus;
-		result->free = 1;
+		exec_order->comm = search_comm(complus[0], paths);
+		exec_order->argsum = complus;
+		exec_order->free = 1;
 	}
 }
 
-void	exec_comm(t_envir *env, int ind, int rfd, int *wfd)
+static void	exec_comm(t_envir *env, int ind, int rfd, int *pip)
 {
 	t_execord	exec_order;
 
@@ -65,60 +65,34 @@ void	exec_comm(t_envir *env, int ind, int rfd, int *wfd)
 		if (!exec_order.comm)
 		{
 			if (exec_order.free)
-				ft_putstr_fd("pipex: command not found\n", 1);
+				ft_putstr_fd("pipex: command not found: ", 1);
 			else
-				ft_putstr_fd("pipex: file not found\n", 1);
+				ft_putstr_fd("pipex: file not found: ", 1);
+			ft_putstr_fd(exec_order.argsum[0], 1);
+			write(1, "\n", 1);
 		}
 		else
-			exec(&exec_order, rfd, wfd, env->envp);
+			exec(&exec_order, rfd, pip, env->envp);
 		execfree(&exec_order);
 	}
 	close(rfd);
-	close(wfd[WR_END]);
+	close(pip[WR_END]);
 }
-
-/*int	big_exec(t_envir *env, int rfd, int ind)
-{
-	int	fd[2][2];
-
-	pipe(fd[ind % 2]);
-	if (!pipe(fd[ind % 2]))
-	{
-		close(fd[ind % 2][0]);
-		close(fd[ind % 2][1]);
-		return(rfd);
-	}
-	exec_comm(env, ind, rfd, fd[ind % 2]);
-	while (env->argv[ind + 2])
-	{
-		ind++;
-		pipe(fd[ind % 2]);
-		if (!pipe(fd[ind % 2]))
-		{
-			close(fd[ind % 2][0]);
-			close(fd[ind % 2][1]);
-			ind--;
-			break ;
-		}
-		exec_comm(env, ind,  fd[(ind + 1) % 2][0], fd[ind % 2]);
-	}
-	return(fd[ind % 2][0]);
-}*/
 
 int	exec_manage(t_envir *env, int rfd, int ind)
 {
-	int	fd[2][2];
+	int	pip[2][2];
 
 	while (ind < env->argc)
 	{
-		if (pipe(fd[ind % 2]) < 0)
+		if (pipe(pip[ind % 2]) < 0)
 		{
-			close(fd[ind % 2][RD_END]);
-			close(fd[ind % 2][WR_END]);
+			close(pip[ind % 2][RD_END]);
+			close(pip[ind % 2][WR_END]);
 			return (rfd);
 		}
-		exec_comm(env, ind, rfd, fd[ind % 2]);
-		rfd = fd[ind % 2][RD_END];
+		exec_comm(env, ind, rfd, pip[ind % 2]);
+		rfd = pip[ind % 2][RD_END];
 		ind++;
 	}
 	return(rfd);
