@@ -15,14 +15,14 @@
 static void	execfree(t_execord *exec_order)
 {
 	int	ind;
-	
+
 	if (exec_order->free && exec_order->comm)
 		free(exec_order->comm);
 	ind = 0;
 	while (exec_order->argsum[ind])
 	{
 		free(exec_order->argsum[ind]);
-		ind++;	
+		ind++;
 	}
 	free(exec_order->argsum);
 }
@@ -31,14 +31,14 @@ static void	get_execord(char *command, char **paths, t_execord *exec_order)
 {
 	char		**complus;
 	char		*last_bar;
-	
+
 	complus = ft_split(command, ' ');
 	last_bar = ft_strrchr(complus[0], '/');
 	if (last_bar)
 	{
 		exec_order->comm = command;
 		if (access(exec_order->comm, F_OK) < 0)
-		 	exec_order->comm = NULL;
+			exec_order->comm = NULL;
 		exec_order->argsum = complus;
 		last_bar = ft_strdup(last_bar + sizeof(char));
 		free(complus[0]);
@@ -65,11 +65,11 @@ static void	exec_comm(t_envir *env, int ind, int rfd, int *pip)
 		if (!exec_order.comm)
 		{
 			ft_putstr_fd("pipex: ", 1);
-			ft_putstr_fd(exec_order.argsum[0], 1);
 			if (exec_order.free)
-				ft_putstr_fd(": command not found\n", 1);
+				ft_putstr_fd("command not found: ", 1);
 			else
-				ft_putstr_fd(": file not found\n", 1);
+				ft_putstr_fd("file not found: ", 1);
+			ft_putendl_fd(exec_order.argsum[0], 1);
 		}
 		else
 			exec(&exec_order, rfd, pip, env->envp);
@@ -95,5 +95,5 @@ int	exec_manage(t_envir *env, int rfd, int ind)
 		rfd = pip[ind % 2][RD_END];
 		ind++;
 	}
-	return(rfd);
+	return (rfd);
 }

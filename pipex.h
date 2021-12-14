@@ -6,7 +6,7 @@
 /*   By: vguttenb <vguttenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/01 17:02:26 by vguttenb          #+#    #+#             */
-/*   Updated: 2021/12/13 19:18:52 by vguttenb         ###   ########.fr       */
+/*   Updated: 2021/12/14 13:08:27 by vguttenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,4 +52,4 @@ void		err_msg(char *err, char *filename);
 char		*sec_strchr(const char *str, int srch);
 char		*gnl_strjoin(char *keeper, char *buffer);
 
-# endif
+#endif

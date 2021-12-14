@@ -6,7 +6,7 @@
 /*   By: vguttenb <vguttenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/13 16:47:39 by vguttenb          #+#    #+#             */
-/*   Updated: 2021/12/13 19:42:12 by vguttenb         ###   ########.fr       */
+/*   Updated: 2021/12/14 13:06:10 by vguttenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static int	nullfd(void)
 
 	pipe(fd);
 	close(fd[WR_END]);
-	return(fd[RD_END]);
+	return (fd[RD_END]);
 }
 
 static int	get_tty(char *limiter)
@@ -38,7 +38,8 @@ static int	get_tty(char *limiter)
 			read(0, &buffer[0], 1);
 			keeper = gnl_strjoin(keeper, buffer);
 		}
-		if (ft_strnstr(keeper, limiter, ft_strlen(limiter)) && keeper[ft_strlen(limiter)] == '\n')
+		if (ft_strnstr(keeper, limiter, ft_strlen(limiter))
+			&& keeper[ft_strlen(limiter)] == '\n')
 			break ;
 		write(pip[WR_END], keeper, ft_strlen(keeper));
 		free (keeper);

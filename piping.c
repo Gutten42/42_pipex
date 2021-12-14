@@ -6,7 +6,7 @@
 /*   By: vguttenb <vguttenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/10 18:24:40 by vguttenb          #+#    #+#             */
-/*   Updated: 2021/12/13 19:06:51 by vguttenb         ###   ########.fr       */
+/*   Updated: 2021/12/14 13:09:41 by vguttenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,21 +15,21 @@
 static void	take_output(int wfd, int rfd)
 {
 	char	result;
-	ssize_t more;
-	
+	ssize_t	more;
+
 	more = read(rfd, &result, 1);
 	while (more > 0)
 	{
 		write(wfd, &result, 1);
 		more = read(rfd, &result, 1);
 	}
-	close(wfd);	
+	close(wfd);
 }
 
 void	piping(t_envir *env, int ind, int rfd)
 {
 	int	wfd;
-	
+
 	if (ind < env->argc || ind == 2 || env->tty_mode)
 	{
 		wfd = open(env->argv[env->argc],
