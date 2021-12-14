@@ -64,12 +64,12 @@ static void	exec_comm(t_envir *env, int ind, int rfd, int *pip)
 		get_execord(env->argv[ind], env->paths, &exec_order);
 		if (!exec_order.comm)
 		{
-			if (exec_order.free)
-				ft_putstr_fd("pipex: command not found: ", 1);
-			else
-				ft_putstr_fd("pipex: file not found: ", 1);
+			ft_putstr_fd("pipex: ", 1);
 			ft_putstr_fd(exec_order.argsum[0], 1);
-			write(1, "\n", 1);
+			if (exec_order.free)
+				ft_putstr_fd(": command not found\n", 1);
+			else
+				ft_putstr_fd(": file not found\n", 1);
 		}
 		else
 			exec(&exec_order, rfd, pip, env->envp);

@@ -69,6 +69,6 @@ int	main(int argc, char **argv, char **envp)
 	rfd = get_rfd(&env, &ind);
 	piping(&env, ind, rfd);
 	free_paths(env.paths);
-	//system("leaks pipex");
+	system("leaks pipex");
 	//printf("Success\n");
 }

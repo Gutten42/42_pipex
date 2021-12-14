@@ -15,8 +15,8 @@
 void	err_msg(char *err, char *filename)
 {
 	ft_putstr_fd("pipex: ", 1);
-	ft_putstr_fd(err, 1);
-	ft_putstr_fd(": ", 1);
 	ft_putstr_fd(filename, 1);
+	ft_putstr_fd(": ", 1);
+	ft_putstr_fd(err, 1);
 	ft_putstr_fd("\n", 1);
 }
